@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from db_helper import db_helper
+from models.db_helper import db_helper
+from models.base import Base
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     async with db_helper.engine.begin() as conn:
-#         # await conn.run_sync(Base.metadata.create_all)
-#     yield
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with db_helper.engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
