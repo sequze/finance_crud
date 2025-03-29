@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).parent
 
 class Settings(BaseSettings):
     db_url: str = f"sqlite+aiosqlite:///{BASE_DIR}/finance.db"
-    db_echo: bool = True
+    db_echo: bool = False
 
 
 settings = Settings()

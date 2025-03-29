@@ -1,8 +1,8 @@
-"""Create Tables
+"""edited balance, transaction types to int
 
-Revision ID: 890f91fa7301
+Revision ID: db054548d5e0
 Revises: 
-Create Date: 2025-03-29 18:43:59.645796
+Create Date: 2025-03-29 19:14:10.036502
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '890f91fa7301'
+revision: str = 'db054548d5e0'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,14 +27,14 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('users',
-    sa.Column('name', sa.String(), nullable=False),
-    sa.Column('balance', sa.Float(), nullable=False),
+    sa.Column('username', sa.String(), nullable=False),
+    sa.Column('balance', sa.Integer(), nullable=False),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('transactions',
     sa.Column('type', sa.String(), nullable=False),
-    sa.Column('amount', sa.Float(), nullable=False),
+    sa.Column('amount', sa.Integer(), nullable=False),
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('time', sa.DateTime(), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=False),

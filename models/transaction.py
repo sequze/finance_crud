@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class Transaction(Base):
     type: Mapped[str]
-    amount: Mapped[float]
+    amount: Mapped[int]
     description: Mapped[str] = mapped_column(nullable=True)
     time: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
     # relationships

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .transaction import Transaction
 class User(Base):
-    name: Mapped[str]
-    balance: Mapped[float]
+    username: Mapped[str]
+    balance: Mapped[int]
     transactions: Mapped[list["Transaction"]] = relationship(back_populates="user",
                                                              cascade="all, delete")
