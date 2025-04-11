@@ -15,15 +15,15 @@ async def get_users(
     return await crud.get_users(session)
 
 
-@router.post("/", response_model=User)
+@router.get("/{user_id}", response_model=User)
 async def get_user_by_id(
-    id: int,
+    user_id: int,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    u = await crud.get_user_by_id(session, id)
+    u = await crud.get_user_by_id(session, user_id)
     if u is None:
         raise HTTPException(404, "User not found!")
-    else: return u
+    return u
 
 
 @router.post("/create_user", response_model=User)
@@ -31,22 +31,27 @@ async def create_user(
     user: UserCreate,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    u = await crud.create_user(session, user)
+    try:
+        u = await crud.create_user(session, user)
+    except ValueError as e:
+        raise HTTPException(
+            404, "Username already exists"
+        )
     return u
 
 
-@router.patch("/edit_user", response_model=User)
+@router.patch("/{user_id}", response_model=User)
 async def update_user(
-    id: int,
+    user_id: int,
     user_update: UserUpdate,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency)
 ):
-    u = await session.get(DbUser, id)
+    u = await crud.get_user_by_id(user_id)
     if not u: raise HTTPException(404, "User not found!")
     return await crud.update_user(session, u, user_update)
 
 
-@router.delete("/delete_user")
+@router.delete("/{user_id}")
 async def delete_user(
     id: int,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
@@ -54,3 +59,4 @@ async def delete_user(
     u = await session.get(DbUser, id)
     if u is None: raise HTTPException(404, "User is not found!")
     await crud.delete_user(session, u)
+    return None
