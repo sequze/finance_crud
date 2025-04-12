@@ -1,11 +1,12 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from .schemas import User, UserCreate, UserUpdate
-router = APIRouter(tags=["Users"])
 from models.db_helper import db_helper
 from sqlalchemy import select
 from . import crud
 from models import User as DbUser
+
+router = APIRouter(tags=["Users"])
 
 #TODO: структурировать нормально
 @router.get("/", response_model=list[User])

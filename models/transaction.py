@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class Transaction(Base):
-    type: Mapped[str]
+    type: Mapped[str] # доход / расход
     amount: Mapped[int]
     description: Mapped[str] = mapped_column(nullable=True)
     time: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
