@@ -1,0 +1,59 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from .schemas import TransactionCreate, TransactionUpdate
+from models import Transaction
+
+
+async def get_transaction(session: AsyncSession, id: int):
+    t = session.get(Transaction, id)
+    if not t:
+        raise ValueError("Not Found")
+    return t
+
+
+async def create_transaction(
+    session: AsyncSession, data: TransactionCreate
+) -> Transaction:
+    transaction = Transaction(
+        type=data.type,
+        amount=data.amount,
+        description=data.description,
+        category_id=data.category_id,
+        user_id=data.user_id,
+    )
+    session.add(transaction)
+    await session.commit()
+    return transaction
+
+
+async def delete_transaction(session: AsyncSession, id: int) -> Transaction:
+    t = get_transaction(session, id)
+    await session.delete(t)
+    return t
+
+
+async def update_transaction(
+    session: AsyncSession,
+    id: int,
+    data: TransactionUpdate,
+) -> Transaction:
+    t = get_transaction(session, id)
+    if data.type:
+        t.type = data.type
+    if data.amount:
+        t.type = data.amount
+    if data.user_id:
+        t.type = data.user_id
+    if data.category_id:
+        t.type = data.category_id
+
+    await session.commit()
+    return t
+
+
+async def get_transactions(session: AsyncSession) -> list[Transaction]:
+    transactions = await session.scalars(
+        select(Transaction)
+        .order_by(Transaction.id))
+    transactions = [t for t in transactions]
+    return transactions
