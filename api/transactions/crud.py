@@ -1,11 +1,15 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from .schemas import TransactionCreate, TransactionUpdate
 from models import Transaction
 
 
 async def get_transaction(session: AsyncSession, id: int):
-    t = session.get(Transaction, id)
+    t = await session.scalar(
+        select(Transaction)
+        .where(Transaction.id == id)
+    )
     if not t:
         raise ValueError("Not Found")
     return t
@@ -27,8 +31,9 @@ async def create_transaction(
 
 
 async def delete_transaction(session: AsyncSession, id: int) -> Transaction:
-    t = get_transaction(session, id)
+    t = await get_transaction(session, id)
     await session.delete(t)
+    await session.commit()
     return t
 
 
@@ -37,15 +42,15 @@ async def update_transaction(
     id: int,
     data: TransactionUpdate,
 ) -> Transaction:
-    t = get_transaction(session, id)
+    t = await get_transaction(session, id)
     if data.type:
         t.type = data.type
     if data.amount:
-        t.type = data.amount
+        t.amount = data.amount
     if data.user_id:
-        t.type = data.user_id
+        t.user_id = data.user_id
     if data.category_id:
-        t.type = data.category_id
+        t.category_id = data.category_id
 
     await session.commit()
     return t
@@ -54,6 +59,7 @@ async def update_transaction(
 async def get_transactions(session: AsyncSession) -> list[Transaction]:
     transactions = await session.scalars(
         select(Transaction)
-        .order_by(Transaction.id))
+        .order_by(Transaction.id)
+        )
     transactions = [t for t in transactions]
     return transactions
