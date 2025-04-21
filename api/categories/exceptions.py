@@ -1,0 +1,2 @@
+class CategoryNotFoundException(Exception):
+    pass

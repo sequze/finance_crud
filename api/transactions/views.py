@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .schemas import TransactionSchema, TransactionCreate, TransactionUpdate
 from models import db_helper
 from . import crud
+from .exceptions import Transaction404Error
 
 router = APIRouter(tags=["Transactions"])
 
@@ -27,7 +28,7 @@ async def get_transaction(
 ):
     try:
         t = await crud.get_transaction(session, transaction_id)
-    except ValueError:
+    except Transaction404Error:
         raise HTTPException(404, "Transaction not found!")
     return t
 
@@ -38,9 +39,9 @@ async def update_transaction(
     transaction: TransactionUpdate,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency)    
 ):
-    try: 
+    try:
         t = await crud.update_transaction(session, transaction_id, transaction)
-    except ValueError:
+    except Transaction404Error:
         raise HTTPException(404, "Transaction not found!")
     return t
 
@@ -52,6 +53,6 @@ async def delete_transaction(
 ):
     try:
         t = await crud.delete_transaction(session, transaction_id)
-    except ValueError:
+    except Transaction404Error:
         raise HTTPException(404, "Not found!")
     return t

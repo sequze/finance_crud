@@ -30,6 +30,6 @@ class DatabaseHelper:
         session = self.create_scoped_session()
         yield session
         await session.close()
-            
+
 
 db_helper = DatabaseHelper(url=settings.db_url, echo=settings.db_echo)

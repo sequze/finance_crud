@@ -2,7 +2,7 @@ from models import Category
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from .schemas import CategoryUpdate
-
+from .exceptions import CategoryNotFoundException
 
 async def create_category(session: AsyncSession, name: str) -> Category:
     c = Category(name=name)
@@ -18,21 +18,21 @@ async def get_categories(session: AsyncSession) -> list[Category]:
 
 
 async def get_category_by_id(session: AsyncSession,
-                             id: int) -> Category | None:
-    return await session.get(Category, id)
+                             id: int) -> Category:
+    c = await session.get(Category, id)
+    if not c:
+        raise CategoryNotFoundException()
 
 
 async def update_category(session: AsyncSession, category: CategoryUpdate, id: int) -> Category:
-    c = await session.get(Category, id)
-    if (not c): raise ValueError("Not found")
+    c = await get_category_by_id(id)
     c.name = category.name
     await session.commit()
     return c
 
 
 async def delete_category(session: AsyncSession, id: int) -> Category:
-    c = await session.get(Category, id)
-    if (not c): raise ValueError("Not found")
+    c = await get_category_by_id(id)
     await session.delete(c)
     await session.commit()
     return c
