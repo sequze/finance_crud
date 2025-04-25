@@ -8,5 +8,6 @@ if TYPE_CHECKING:
 class User(Base):
     username: Mapped[str]
     balance: Mapped[int]
+    password_hash: Mapped[str]
     transactions: Mapped[list["Transaction"]] = relationship(back_populates="user",
                                                              cascade="all, delete")

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class Category(Base):
     __tablename__ = "categories"
     name: Mapped[str]
-    d: Mapped[int]
+    description: Mapped[int] = mapped_column(nullable=True)
     transactions: Mapped[list["Transaction"]] = relationship(
         back_populates="category",
         cascade="all, delete")

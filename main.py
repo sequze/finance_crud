@@ -3,6 +3,8 @@ from contextlib import asynccontextmanager
 from models.db_helper import db_helper
 from models.base import Base
 from api import router
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with db_helper.engine.begin() as conn:
