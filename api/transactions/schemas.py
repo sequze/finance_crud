@@ -2,6 +2,7 @@ from pydantic import BaseModel, PositiveInt, ConfigDict
 from typing import Literal
 from api.categories.schemas import CategorySchema
 from api.users.schemas import UserSchema
+from datetime import datetime
 
 class TransactionBase(BaseModel):
     type: Literal["income", "expense"]
@@ -24,4 +25,5 @@ class TransactionUpdate(TransactionBase):
 
 class TransactionSchema(TransactionBase):
     type: str
+    time: datetime
     model_config = ConfigDict(from_attributes=True)

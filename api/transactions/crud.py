@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -67,4 +68,13 @@ async def get_transactions(session: AsyncSession) -> list[Transaction]:
         .order_by(Transaction.id)
         )
     transactions = [t for t in transactions]
+    return transactions
+
+
+async def get_transactions_by_user_per_month(session: AsyncSession, user_id: int) -> list[Transaction]:
+    transactions = await session.scalars(
+        select(Transaction)
+        .where(Transaction.user_id == user_id and Transaction.time > (datetime.now(timezone.utc) - timedelta(days=31))
+    )
+    )
     return transactions

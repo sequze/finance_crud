@@ -14,7 +14,6 @@ from .helpers import (
     TOKEN_TYPE_FIELD,
 )
 
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 

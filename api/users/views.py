@@ -5,6 +5,8 @@ from models.db_helper import db_helper
 from sqlalchemy import select
 from . import crud
 from models import User as DbUser
+from api.transactions.crud import get_transactions_by_user_per_month
+from api.transactions.schemas import TransactionSchema as Transaction
 
 router = APIRouter(tags=["Users"])
 
@@ -61,3 +63,12 @@ async def delete_user(
     if u is None: raise HTTPException(404, "User is not found!")
     await crud.delete_user(session, u)
     return None
+
+
+@router.get("/{user_id}/transactions") # Получить транзакции за последний месяц
+async def get_transactions(
+    user_id: int,
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+) -> list[Transaction]:
+    transactions = await get_transactions_by_user_per_month(session, user_id)
+    return transactions
