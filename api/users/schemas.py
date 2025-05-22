@@ -15,6 +15,6 @@ class UserUpdate(UserBase):
     balance: int | None = None
 
 
-class User(UserBase):
+class UserSchema(UserBase):
     model_config=ConfigDict(from_attributes=True)
     id: int

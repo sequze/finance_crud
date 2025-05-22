@@ -6,13 +6,17 @@ from datetime import datetime, timedelta, timezone
 
 def jwt_encode(
     payload: dict,
+    expire_timedelta: timedelta | None = None,
     private_key: str = settings.jwt_settings.private_key_path.read_text(),
     algorithm: str = settings.jwt_settings.algorithm,
-    expire_minutes: int = settings.jwt_settings.access_token_expire_minutes
+    expire_minutes: int = settings.jwt_settings.access_token_expire_minutes,
 ):
     to_encode = payload.copy()
     now = datetime.now(timezone.utc)
-    exp = now + timedelta(minutes=expire_minutes)
+    if expire_timedelta:
+        exp = now + expire_timedelta
+    else:
+        exp = now + timedelta(minutes=expire_minutes)
     to_encode.update(
         exp=exp,
         iat=now,

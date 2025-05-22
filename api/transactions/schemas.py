@@ -1,7 +1,7 @@
 from pydantic import BaseModel, PositiveInt, ConfigDict
 from typing import Literal
 from api.categories.schemas import CategorySchema
-from api.users.schemas import User
+from api.users.schemas import UserSchema
 
 class TransactionBase(BaseModel):
     type: Literal["income", "expense"]

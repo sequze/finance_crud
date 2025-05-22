@@ -10,6 +10,7 @@ class JwtSettings(BaseModel):
     public_key_path: Path
     algorithm: str
     access_token_expire_minutes: int
+    refresh_token_expire_days: int
 
 
 class Settings(BaseSettings):
@@ -19,7 +20,8 @@ class Settings(BaseSettings):
         private_key_path=BASE_DIR / "keys" / "private.pem",
         public_key_path=BASE_DIR / "keys" / "public.pem",
         algorithm="RS256",
-        access_token_expire_minutes=15
+        access_token_expire_minutes=15,
+        refresh_token_expire_days=7,
     )
 
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .schemas import User, UserCreate, UserUpdate
+from .schemas import UserSchema, UserCreate, UserUpdate
 from models.db_helper import db_helper
 from sqlalchemy import select
 from . import crud
@@ -9,14 +9,14 @@ from models import User as DbUser
 router = APIRouter(tags=["Users"])
 
 #TODO: структурировать нормально
-@router.get("/", response_model=list[User])
+@router.get("/", response_model=list[UserSchema])
 async def get_users(
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
     ):
     return await crud.get_users(session)
 
 
-@router.get("/{user_id}", response_model=User)
+@router.get("/{user_id}", response_model=UserSchema)
 async def get_user_by_id(
     user_id: int,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
@@ -27,7 +27,7 @@ async def get_user_by_id(
     return u
 
 
-@router.post("/create_user", response_model=User)
+@router.post("/create_user", response_model=UserSchema)
 async def create_user(
     user: UserCreate,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
@@ -41,7 +41,7 @@ async def create_user(
     return u
 
 
-@router.patch("/{user_id}", response_model=User)
+@router.patch("/{user_id}", response_model=UserSchema)
 async def update_user(
     user_id: int,
     user_update: UserUpdate,
